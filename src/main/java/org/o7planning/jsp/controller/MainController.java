@@ -1,5 +1,6 @@
 package org.o7planning.jsp.controller;
 
+import com.alibaba.fastjson.JSON;
 import org.o7planning.jsp.config.GeetestConfig;
 import org.o7planning.jsp.model.Person;
 import org.o7planning.jsp.sdk.GeetestLib;
@@ -7,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,8 @@ static {
     }
 
     @RequestMapping(value = "/gt/register1")
-    public void start1(HttpServletRequest request,
+    @ResponseBody
+    public Object start1(HttpServletRequest request,
                          HttpServletResponse response,String t) throws IOException {
         GeetestLib gtSdk = new GeetestLib(GeetestConfig.getGeetest_id(), GeetestConfig.getGeetest_key(),
                 GeetestConfig.isnewfailback());
@@ -64,13 +66,12 @@ static {
         request.getSession().setAttribute("userid", userid);
 
         resStr = gtSdk.getResponseStr();
-
-         PrintWriter out = response.getWriter();
-        out.println(resStr);
+        return JSON.toJSON(resStr);
 
     }
     @RequestMapping(value = "/gt/register2")
-    public void start2(HttpServletRequest request,
+    @ResponseBody
+    public Object start2(HttpServletRequest request,
                        HttpServletResponse response,String t) {
 
           GeetestLib gtSdk = new GeetestLib(GeetestConfig.getGeetest_id(), GeetestConfig.getGeetest_key(),
@@ -97,12 +98,6 @@ static {
 
         resStr = gtSdk.getResponseStr();
 
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        out.println(resStr);
+        return JSON.toJSON(resStr);
     }
 }

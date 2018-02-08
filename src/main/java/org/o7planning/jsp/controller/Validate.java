@@ -1,5 +1,6 @@
 package org.o7planning.jsp.controller;
 
+import com.alibaba.fastjson.JSON;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.o7planning.jsp.config.GeetestConfig;
@@ -7,16 +8,19 @@ import org.o7planning.jsp.sdk.GeetestLib;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 
-@Controller
+@RestController
 public class Validate {
     @RequestMapping(value = "gt/ajax-validate1")
-    public void validate(HttpServletRequest request,
+    public Object validate(HttpServletRequest request,
                            HttpServletResponse response) {
         GeetestLib gtSdk = new GeetestLib(GeetestConfig.getGeetest_id(), GeetestConfig.getGeetest_key(),
                 GeetestConfig.isnewfailback());
@@ -54,43 +58,21 @@ public class Validate {
 
 
         if (gtResult == 1) {
-            // 验证成功
-            PrintWriter out = null;
-            try {
-                out = response.getWriter();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            JSONObject data = new JSONObject();
-            try {
-                data.put("status", "success");
-                data.put("version", gtSdk.getVersionInfo());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            out.println(data.toString());
+            Map<String,Object> data = new HashMap<>();
+            data.put("status", "success");
+            data.put("version", gtSdk.getVersionInfo());
+            return JSON.toJSON(data);
         }
         else {
             // 验证失败
-            JSONObject data = new JSONObject();
-            try {
-                data.put("status", "fail");
-                data.put("version", gtSdk.getVersionInfo());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            PrintWriter out = null;
-            try {
-                out = response.getWriter();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            out.println(data.toString());
+            Map<String,Object> data = new HashMap<>();
+            data.put("status", "fail");
+            data.put("version", gtSdk.getVersionInfo());
+            return JSON.toJSON(data);
         }
     }
     @RequestMapping(value = "gt/ajax-validate2")
-    @ResponseBody
-    public void valideat2(HttpServletRequest request,
+    public Object valideat2(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
         GeetestLib gtSdk = new GeetestLib(GeetestConfig.getGeetest_id(), GeetestConfig.getGeetest_key(),
                 GeetestConfig.isnewfailback());
@@ -127,29 +109,19 @@ public class Validate {
         }
 
 
+
         if (gtResult == 1) {
-            // 验证成功
-            PrintWriter out = response.getWriter();
-            JSONObject data = new JSONObject();
-            try {
-                data.put("status", "success");
-                data.put("version", gtSdk.getVersionInfo());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            out.println(data.toString());
+            Map<String,Object> data = new HashMap<>();
+            data.put("status", "success");
+            data.put("version", gtSdk.getVersionInfo());
+            return JSON.toJSON(data);
         }
         else {
             // 验证失败
-            JSONObject data = new JSONObject();
-            try {
-                data.put("status", "fail");
-                data.put("version", gtSdk.getVersionInfo());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            PrintWriter out = response.getWriter();
-            out.println(data.toString());
+            Map<String,Object> data = new HashMap<>();
+            data.put("status", "fail");
+            data.put("version", gtSdk.getVersionInfo());
+            return JSON.toJSON(data);
         }
     }
 
